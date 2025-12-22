@@ -1,0 +1,3 @@
+# API 密钥
+
+API_KEY=sk-Ju0tcnTiy4LTFS9M5tkFw4PsGn6Sgkjn4Ph3thfJEUykVky8

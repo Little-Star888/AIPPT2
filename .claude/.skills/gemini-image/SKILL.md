@@ -86,6 +86,7 @@ curl -s -X POST "https://api.apicore.ai/v1/images/generations" \
 ## 参考文档
 
 - `案例/案例展示.html` - 风格参考与 PPT 案例图库（15+ 种风格参考图，3 套完整 PPT 案例）
+- `tips/文章转ascii-ppt方法论.md` - 将文章转换为 ASCII PPT 框架的完整方法论
+- `tips/ppt生图方法论.md` - PPT 生图方法论与 Prompt 模板
 - `tips/chinese-text.md` - 中文文字处理技巧
 - `tips/4k-upscale.md` - 4K 高清化增强
-- `tips/ppt生图方法论.md` - PPT 生图方法论与 Prompt 模板
