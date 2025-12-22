@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini 图像生成 - 案例展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .section {
+            margin-bottom: 60px;
+        }
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            border-left: 5px solid #667eea;
+            padding-left: 15px;
+            margin-bottom: 25px;
+        }
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .style-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .style-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .style-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .style-name {
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: #333;
+        }
+        .ppt-section {
+            margin-bottom: 50px;
+        }
+        .ppt-title {
+            font-size: 1.3em;
+            color: #555;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .ppt-title .icon {
+            margin-right: 10px;
+        }
+        .ppt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .ppt-slide {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .ppt-slide:hover {
+            transform: scale(1.02);
+        }
+        .ppt-slide img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .ppt-slide-name {
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            background: #f8f9fa;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #888;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            background: transparent;
+            border-radius: 10px;
+            position: relative;
+        }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 10px;
+        }
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .tag {
+            display: inline-block;
+            background: #667eea;
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            margin-left: 10px;
+        }
+        .stats {
+            text-align: center;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Gemini 图像生成案例库</h1>
+        <p class="subtitle">精选风格参考 | PPT 实战案例 | 一键预览</p>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">15</div>
+                <div class="stat-label">风格参考</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">PPT 案例</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">15</div>
+                <div class="stat-label">幻灯片</div>
+            </div>
+        </div>
+
+        <!-- 风格参考区 -->
+        <div class="section">
+            <h2 class="section-title">📚 风格参考图库</h2>
+            <p style="color: #666; margin-bottom: 20px;">点击图片放大预览，可用于图生图参考</p>
+            <div class="style-grid">
+                <div class="style-card" onclick="openModal('乐高积木风格.jpg')">
+                    <img src="乐高积木风格.jpg" alt="乐高积木风格">
+                    <div class="style-name">乐高积木风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('像素艺术风格.jpg')">
+                    <img src="像素艺术风格.jpg" alt="像素艺术风格">
+                    <div class="style-name">像素艺术风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('卡通人物风.jpg')">
+                    <img src="卡通人物风.jpg" alt="卡通人物风">
+                    <div class="style-name">卡通人物风</div>
+                </div>
+                <div class="style-card" onclick="openModal('吉卜力风格.jpg')">
+                    <img src="吉卜力风格.jpg" alt="吉卜力风格">
+                    <div class="style-name">吉卜力风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('哆啦A梦风格.jpg')">
+                    <img src="哆啦A梦风格.jpg" alt="哆啦A梦风格">
+                    <div class="style-name">哆啦A梦风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('新海诚风格.jpg')">
+                    <img src="新海诚风格.jpg" alt="新海诚风格">
+                    <div class="style-name">新海诚风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('梵高星空风格.jpg')">
+                    <img src="梵高星空风格.jpg" alt="梵高星空风格">
+                    <div class="style-name">梵高星空风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('水墨国风.jpg')">
+                    <img src="水墨国风.jpg" alt="水墨国风">
+                    <div class="style-name">水墨国风</div>
+                </div>
+                <div class="style-card" onclick="openModal('浮世绘风格.jpg')">
+                    <img src="浮世绘风格.jpg" alt="浮世绘风格">
+                    <div class="style-name">浮世绘风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('海贼王风格.jpg')">
+                    <img src="海贼王风格.jpg" alt="海贼王风格">
+                    <div class="style-name">海贼王风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('涂鸦街头风格.jpg')">
+                    <img src="涂鸦街头风格.jpg" alt="涂鸦街头风格">
+                    <div class="style-name">涂鸦街头风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('漫威漫画风格.jpg')">
+                    <img src="漫威漫画风格.jpg" alt="漫威漫画风格">
+                    <div class="style-name">漫威漫画风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('火影忍者风格.jpg')">
+                    <img src="火影忍者风格.jpg" alt="火影忍者风格">
+                    <div class="style-name">火影忍者风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('皮克斯3D风格.jpg')">
+                    <img src="皮克斯3D风格.jpg" alt="皮克斯3D风格">
+                    <div class="style-name">皮克斯3D风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('蒸汽波风格.jpg')">
+                    <img src="蒸汽波风格.jpg" alt="蒸汽波风格">
+                    <div class="style-name">蒸汽波风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('装饰艺术风格.jpg')">
+                    <img src="装饰艺术风格.jpg" alt="装饰艺术风格">
+                    <div class="style-name">装饰艺术风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('赛博朋克风格.jpg')">
+                    <img src="赛博朋克风格.jpg" alt="赛博朋克风格">
+                    <div class="style-name">赛博朋克风格</div>
+                </div>
+                <div class="style-card" onclick="openModal('黏土动画风格.jpg')">
+                    <img src="黏土动画风格.jpg" alt="黏土动画风格">
+                    <div class="style-name">黏土动画风格</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PPT 案例区 -->
+        <div class="section">
+            <h2 class="section-title">📊 PPT 实战案例</h2>
+
+            <div class="ppt-section">
+                <h3 class="ppt-title">
+                    <span class="icon">🤖</span>
+                    哆啦A梦风格 PPT <span class="tag">5页</span>
+                </h3>
+                <div class="ppt-grid">
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-哆啦A梦/PPT2-痛点引入.jpg')">
+                        <img src="skills-ppt-哆啦A梦/PPT2-痛点引入.jpg" alt="痛点引入">
+                        <div class="ppt-slide-name">痛点引入</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-哆啦A梦/PPT3-三大优势.jpg')">
+                        <img src="skills-ppt-哆啦A梦/PPT3-三大优势.jpg" alt="三大优势">
+                        <div class="ppt-slide-name">三大优势</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-哆啦A梦/PPT4-章节分隔.jpg')">
+                        <img src="skills-ppt-哆啦A梦/PPT4-章节分隔.jpg" alt="章节分隔">
+                        <div class="ppt-slide-name">章节分隔</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-哆啦A梦/PPT5-判断标准.jpg')">
+                        <img src="skills-ppt-哆啦A梦/PPT5-判断标准.jpg" alt="判断标准">
+                        <div class="ppt-slide-name">判断标准</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-哆啦A梦/PPT6-适用场景.jpg')">
+                        <img src="skills-ppt-哆啦A梦/PPT6-适用场景.jpg" alt="适用场景">
+                        <div class="ppt-slide-name">适用场景</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ppt-section">
+                <h3 class="ppt-title">
+                    <span class="icon">🌌</span>
+                    梵高星空风格 PPT <span class="tag">5页</span>
+                </h3>
+                <div class="ppt-grid">
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-梵高星空/第1页-痛点引入.jpg')">
+                        <img src="skills-ppt-梵高星空/第1页-痛点引入.jpg" alt="痛点引入">
+                        <div class="ppt-slide-name">痛点引入</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-梵高星空/第2页-Skills三大优势.jpg')">
+                        <img src="skills-ppt-梵高星空/第2页-Skills三大优势.jpg" alt="三大优势">
+                        <div class="ppt-slide-name">三大优势</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-梵高星空/第3页-章节页.jpg')">
+                        <img src="skills-ppt-梵高星空/第3页-章节页.jpg" alt="章节页">
+                        <div class="ppt-slide-name">章节页</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-梵高星空/第4页-判断标准.jpg')">
+                        <img src="skills-ppt-梵高星空/第4页-判断标准.jpg" alt="判断标准">
+                        <div class="ppt-slide-name">判断标准</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-梵高星空/第5页-常见适用场景.jpg')">
+                        <img src="skills-ppt-梵高星空/第5页-常见适用场景.jpg" alt="常见适用场景">
+                        <div class="ppt-slide-name">常见适用场景</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ppt-section">
+                <h3 class="ppt-title">
+                    <span class="icon">🍃</span>
+                    火影忍者风格 PPT <span class="tag">5页</span>
+                </h3>
+                <div class="ppt-grid">
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-火影忍者/PPT2-痛点引入.jpg')">
+                        <img src="skills-ppt-火影忍者/PPT2-痛点引入.jpg" alt="痛点引入">
+                        <div class="ppt-slide-name">痛点引入</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-火影忍者/PPT3-三大优势.jpg')">
+                        <img src="skills-ppt-火影忍者/PPT3-三大优势.jpg" alt="三大优势">
+                        <div class="ppt-slide-name">三大优势</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-火影忍者/PPT4-章节分隔.jpg')">
+                        <img src="skills-ppt-火影忍者/PPT4-章节分隔.jpg" alt="章节分隔">
+                        <div class="ppt-slide-name">章节分隔</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-火影忍者/PPT5-判断标准.jpg')">
+                        <img src="skills-ppt-火影忍者/PPT5-判断标准.jpg" alt="判断标准">
+                        <div class="ppt-slide-name">判断标准</div>
+                    </div>
+                    <div class="ppt-slide" onclick="openModal('skills-ppt-火影忍者/PPT6-适用场景.jpg')">
+                        <img src="skills-ppt-火影忍者/PPT6-适用场景.jpg" alt="适用场景">
+                        <div class="ppt-slide-name">适用场景</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>💡 提示：点击图片可放大查看 | 使用风格参考图时，将图片 URL 放在 prompt 开头进行图生图</p>
+            <p style="margin-top: 10px;">🎨 Powered by Gemini Image API | Skills 图像生成技能</p>
+        </div>
+    </div>
+
+    <!-- 图片预览模态框 -->
+    <div class="modal" id="modal" onclick="closeModal(event)">
+        <button class="modal-close" onclick="closeModal(event)">×</button>
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <img id="modalImg" src="" alt="预览图">
+        </div>
+    </div>
+
+    <script>
+        function openModal(imagePath) {
+            const modal = document.getElementById('modal');
+            const modalImg = document.getElementById('modalImg');
+            modalImg.src = imagePath;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event) {
+            if (event.target.id === 'modal' || event.target.classList.contains('modal-close')) {
+                const modal = document.getElementById('modal');
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // ESC 键关闭模态框
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('modal');
+                if (modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
