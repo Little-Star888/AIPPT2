@@ -1,58 +1,57 @@
-# Gemini Image Skill
+# AIPPT - AI PPT 生成工作流
 
-Claude Code Skill，通过自然语言生成图片。支持文生图和图生图。
+从文章内容生成精美 PPT 的完整工作流。
 
-## 获取 API Key
+## 工作流
 
-1. 访问 [ismaque.org/register](https://ismaque.org/register?aff=npk7)
-2. 注册账号并获取 API Key
-3. 将 Key 填入 `secrets.md` 文件中
-
-## 安装
-
-```bash
-# 1. 复制到 Claude Code skills 目录
-cp -r gemini-image-skill ~/.claude/skills/gemini-image
-
-# 2. 复制模板文件并填入 API Key
-cd ~/.claude/skills/gemini-image
-cp secrets.example.md secrets.md
-
-# 3. 编辑 secrets.md，填入你的 API Key
-nano secrets.md
+```
+文章内容 → ASCII PPT 框架 → AI 生图 → 完整 PPT
 ```
 
-重启 Claude Code 即可使用。
+## 使用方法
 
-## 使用示例
+### 第一步：文章转 ASCII PPT 框架
 
-直接对 Claude 说：
+给文章内容，Claude 会生成 ASCII 布局框架：
 
-| 说法 | 效果 |
+```
+帮我把这篇文章生成 ASCII PPT 框架
+```
+
+### 第二步：选择风格生成图片
+
+选择风格（哆啦A梦/火影忍者/赛博朋克等），逐页生成：
+
+```
+用哆啦A梦风格生成 PPT 第 2 页
+```
+
+## 支持的风格
+
+| 类别 | 风格 |
 |-----|------|
-| "画一只可爱的小猫" | 文生图，标准模型 |
-| "用 4K 模型生成日落图片" | 文生图，4K 超清 |
-| "画一张 16:9 的山水画" | 文生图，横版宽屏 |
-| "根据这张图 URL 画类似的" | 图生图 |
+| 基础 | 扁平插画、等距视图、科技渐变、线条图标 |
+| 动漫 | 哆啦A梦、火影忍者、吉卜力、新海诚、海贼王 |
+| 潮流 | 赛博朋克、蒸汽波、像素艺术、涂鸦街头 |
+| 艺术 | 水墨国风、梵高星空、装饰艺术 |
+| 3D/材质 | 皮克斯3D、乐高积木、黏土动画 |
+| 漫画 | 漫威漫画 |
 
 ## 文件说明
 
 ```
-gemini-image/
-├── SKILL.md      # Skill 入口和调用指令
-├── config.md     # API 配置（模型、尺寸选项）
-├── secrets.md    # API Key（需填入你的密钥）
-└── README.md     # 说明文档
+AIPPT/
+├── SKILL.md                    # 主入口，工作流指引
+├── README.md                   # 本文件
+├── skills-ascii-ppt.md         # 完整示例
+└── tips/
+    └── 文章转ascii-ppt方法论.md  # 详细方法论
 ```
 
-## 支持的模型
+## API 配置
 
-| 模型 | 说明 |
-|-----|------|
-| `gemini-3-pro-image-preview` | 标准版（默认） |
-| `gemini-3-pro-image-preview-2k` | 2K 高清 |
-| `gemini-3-pro-image-preview-4k` | 4K 超清 |
+生图使用 Gemini Image API，需配置 API Key：
 
-## 支持的尺寸
-
-`1:1`（默认）、`16:9`、`9:16`、`4:3`、`3:4`、`3:2`、`2:3`、`4:5`、`5:4`、`21:9`
+1. 访问 [ismaque.org/register](https://ismaque.org/register?aff=npk7)
+2. 获取 API Key
+3. 调用时传入 Key
