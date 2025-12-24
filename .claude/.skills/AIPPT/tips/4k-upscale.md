@@ -16,7 +16,7 @@ curl -s -X POST "http://127.0.0.1:36677/upload" \
 ### 2. 调用 4K 模型生成
 
 ```bash
-curl -s -X POST "https://api.apicore.ai/v1/images/generations" \
+curl -s -X POST "https://ismaque.org/v1/images/generations" \
   -H "Authorization: Bearer API_KEY" \
   -H "Content-Type: application/json" \
   -d '{

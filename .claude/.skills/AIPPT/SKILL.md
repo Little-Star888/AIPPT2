@@ -62,10 +62,10 @@ ASCII PPT 框架
 
 ```bash
 # 生成图片
-curl -s -X POST "https://api.apicore.ai/v1/images/generations" \
+curl -s -X POST "https://ismaque.org/v1/images/generations" \
   -H "Authorization: Bearer API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"model": "gemini-3-pro-image-preview", "prompt": "风格+内容", "size": "1792x1024", "n": 1}'
+  -d '{"model": "gemini-3-pro-image-preview-4k", "prompt": "风格+内容", "size": "1792x1024", "n": 1}'
 
 # 下载图片 (从响应提取 data[0].url)
 curl -s -o "文件名.jpg" "图片URL"
